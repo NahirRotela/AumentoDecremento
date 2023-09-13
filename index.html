@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Balanceador de Carga</title>
+</head>
+<body>
+    <h1>Balanceador de Carga</h1>
+    <p>Cantidad de Contenedores: <span id="containerCount">0</span></p>
+    <button id="addContainer">+</button>
+    <button id="removeContainer">-</button>
+
+    <script>
+        // Configuración inicial
+        let containerCount = 0;
+
+        // Función para actualizar la UI con la cantidad de contenedores
+        function updateContainerCount() {
+            document.getElementById("containerCount").textContent = containerCount;
+        }
+
+        // Función para agregar un contenedor
+        async function addContainer() {
+            try {
+                const response = await fetch('/addContainer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({}),
+                });
+
+                if (response.ok) {
+                    containerCount++;
+                    updateContainerCount();
+                } else {
+                    console.error('Error al agregar contenedor');
+                }
+            } catch (error) {
+                console.error('Error de red', error);
+            }
+        }
+
+        // Función para eliminar un contenedor
+        async function removeContainer() {
+            if (containerCount > 0) {
+                try {
+                    const response = await fetch('/removeContainer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({}),
+                    });
+
+                    if (response.ok) {
+                        containerCount--;
+                        updateContainerCount();
+                    } else {
+                        console.error('Error al eliminar contenedor');
+                    }
+                } catch (error) {
+                    console.error('Error de red', error);
+                }
+            }
+        }
+
+        // Manejadores de eventos para los botones
+        document.getElementById("addContainer").addEventListener("click", addContainer);
+        document.getElementById("removeContainer").addEventListener("click", removeContainer);
+    </script>
+</body>
+</html>
